@@ -1,16 +1,20 @@
 import 'dotenv/config.js'
 import express from 'express'
 
-import { PostgresHelper } from './src/db/postgres/helper.js'
+import { CreateUserController } from './src/controller/create-user.js'
 
 const app = express()
 
-app.get('/', async (req, res) => {
-    const results = await PostgresHelper.query('select * from users')
+app.use(express.json())
 
-    res.send(JSON.stringify(results))
+app.post('/api/users', async (req, res) => {
+    const createUserController = new CreateUserController()
+
+    const { statusCode, body } = await createUserController.execute(req)
+
+    res.status(statusCode).send(body)
 })
 
 app.listen(process.env.PORT, () => {
-    console.log('server running on port 8080')
+    console.log(`Listenning on port: ${process.env.PORT}`)
 })
