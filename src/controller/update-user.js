@@ -1,9 +1,9 @@
 import { EmailAlreadyInUseError } from '../errors/user'
 import { UpdateUseCase } from '../use-cases/update-user'
 import { badRequest, ok, serverError } from './helpers/http.js'
-import validator from 'validator'
 import {
     checkIfEmailIsValid,
+    checkIfIdIsValid,
     checkIfPasswordIsValid,
     emailIsAlreadyInUse,
     invalidIdResponse,
@@ -15,7 +15,7 @@ export class UpdateUserController {
         try {
             const userId = httpRequest.params.userId
 
-            const isIdValid = validator.isUUID(userId)
+            const isIdValid = checkIfIdIsValid(userId)
 
             if (!isIdValid) {
                 return invalidIdResponse()
