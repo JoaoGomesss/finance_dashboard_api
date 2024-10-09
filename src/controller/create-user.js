@@ -51,7 +51,7 @@ export class CreateUserController {
                 })
             }
             console.error(error)
-            return serverError
+            return serverError()
         }
     }
 }

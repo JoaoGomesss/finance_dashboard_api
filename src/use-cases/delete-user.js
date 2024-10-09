@@ -1,4 +1,4 @@
-import { PostgresDeleteUserRepository } from '../repositories/postgres'
+import { PostgresDeleteUserRepository } from '../repositories/postgres/index.js'
 
 export class DeleteUserCase {
     async execute(userId) {
