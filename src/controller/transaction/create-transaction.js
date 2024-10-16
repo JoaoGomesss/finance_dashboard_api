@@ -4,8 +4,8 @@ import {
     created,
     invalidIdResponse,
     serverError,
-} from '../helpers'
-import { badRequest } from '../helpers'
+} from '../helpers/index.js'
+import { badRequest } from '../helpers/index.js'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -14,26 +14,20 @@ export class CreateTransactionController {
 
     async execute(httpRequest) {
         try {
-            const params = httpRequest.params
+            const params = httpRequest.body
 
-            const requiredFields = [
-                'id',
-                'userId',
-                'name',
-                'date',
-                'amount',
-                'type',
-            ]
+            const requiredFields = ['user_id', 'name', 'date', 'amount', 'type']
 
             for (const field of requiredFields) {
-                if (!params[field] || params[field].trim().lenght === 0) {
+                if (
+                    !params[field] ||
+                    params[field].toString().trim().lenght === 0
+                ) {
                     return badRequest({ message: `Missing param: ${field}` })
                 }
             }
 
-            const userIdIsValid = httpRequest.params.userId
-
-            checkIfIdIsValid(userIdIsValid)
+            const userIdIsValid = checkIfIdIsValid(params.user_id)
 
             if (!userIdIsValid) {
                 return invalidIdResponse()
