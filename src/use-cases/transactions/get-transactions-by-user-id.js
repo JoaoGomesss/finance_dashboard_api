@@ -10,15 +10,15 @@ export class GetTransctionByUserId {
         this.getUserByIdRepository = getUserByIdRepository
     }
     async execute(params) {
-        const user = await this.getUserByIdRepository.execute(params.user_id)
+        const user = await this.getUserByIdRepository.execute(params.userId)
 
         if (!user) {
-            throw new UserNotFoundError(params.user_id)
+            throw new UserNotFoundError(params.userId)
         }
 
         const transactions =
             await this.postgresGetTransactionsByUserIdRepository.execute(
-                params.user_id,
+                params.userId,
             )
 
         return transactions
