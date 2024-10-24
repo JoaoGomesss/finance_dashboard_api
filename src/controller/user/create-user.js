@@ -1,16 +1,7 @@
 import { EmailAlreadyInUseError } from '../../errors/user.js'
-import {
-    checkIfEmailIsValid,
-    checkIfPasswordIsValid,
-    emailIsAlreadyInUse,
-    invalidIdResponse,
-    badRequest,
-    created,
-    serverError,
-    validateRequiredFields,
-    requiredFieldIsMissingResponse,
-} from '../helpers/index.js'
-
+import { badRequest, created, serverError } from '../helpers/index.js'
+import { ZodError } from 'zod'
+import { createUserSchema } from '../../schemas/user.js'
 export class CreateUserController {
     constructor(createUserUseCase) {
         this.createUserUseCase = createUserUseCase
@@ -18,36 +9,18 @@ export class CreateUserController {
     async execute(httpRequest) {
         try {
             const params = httpRequest.body
-            const requiredFields = [
-                'first_name',
-                'last_name',
-                'email',
-                'password',
-            ]
 
-            const { ok: requiredFieldsWereProvided, missingField } =
-                validateRequiredFields(params, requiredFields)
-
-            if (!requiredFieldsWereProvided) {
-                return requiredFieldIsMissingResponse(missingField)
-            }
-
-            const passwordIsValid = checkIfPasswordIsValid(params.password)
-
-            if (!passwordIsValid) {
-                return emailIsAlreadyInUse()
-            }
-
-            const emailIsValid = checkIfEmailIsValid(params.email)
-
-            if (!emailIsValid) {
-                return invalidIdResponse()
-            }
+            await createUserSchema.parseAsync(params)
 
             const createdUser = await this.createUserUseCase.execute(params)
 
             return created(createdUser)
         } catch (error) {
+            if (error instanceof ZodError) {
+                return badRequest({
+                    message: error.errors[0].message,
+                })
+            }
             if (error instanceof EmailAlreadyInUseError) {
                 return badRequest({
                     message: error.message,
