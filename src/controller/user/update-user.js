@@ -1,11 +1,9 @@
 import { EmailAlreadyInUseError } from '../../errors/user.js'
+import { updateUserSchema } from '../../schemas/user.js'
+import { ZodError } from 'zod'
 import {
-    checkIfEmailIsValid,
     checkIfIdIsValid,
-    checkIfPasswordIsValid,
-    emailIsAlreadyInUse,
     invalidIdResponse,
-    invalidPasswordResponse,
     badRequest,
     ok,
     serverError,
@@ -27,38 +25,7 @@ export class UpdateUserController {
 
             const params = httpRequest.body
 
-            const allowedFields = [
-                'first_name',
-                'last_name',
-                'email',
-                'password',
-            ]
-
-            const someFieldsIsNotAllowed = Object.keys(params).some(
-                (field) => !allowedFields.includes(field),
-            )
-
-            if (someFieldsIsNotAllowed) {
-                return badRequest({
-                    message: 'Some provided field is not allowed',
-                })
-            }
-
-            if (params.password) {
-                const passwordIsValid = checkIfPasswordIsValid(params.password)
-
-                if (!passwordIsValid) {
-                    return invalidPasswordResponse()
-                }
-            }
-
-            if (params.email) {
-                const emailIsValid = checkIfEmailIsValid(params.email)
-
-                if (!emailIsValid) {
-                    return emailIsAlreadyInUse()
-                }
-            }
+            await updateUserSchema.parseAsync(params)
 
             const updatedUser = await this.updateUserUseCase.execute(
                 userId,
@@ -67,6 +34,11 @@ export class UpdateUserController {
 
             return ok(updatedUser)
         } catch (error) {
+            if (error instanceof ZodError) {
+                return badRequest({
+                    message: error.errors[0].message,
+                })
+            }
             if (error instanceof EmailAlreadyInUseError) {
                 return badRequest({ message: error.message })
             }
