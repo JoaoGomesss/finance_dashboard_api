@@ -1,15 +1,6 @@
-import {
-    checkIfIdIsValid,
-    created,
-    invalidIdResponse,
-    requiredFieldIsMissingResponse,
-    serverError,
-    validateRequiredFields,
-    checkIfAmountIsValid,
-    checkIfTypeIsValid,
-    invalidAmountResponse,
-    invalidTypeResponse,
-} from '../helpers/index.js'
+import { ZodError } from 'zod'
+import { createTransactionSchema } from '../../schemas/transaction.js'
+import { badRequest, created, serverError } from '../helpers/index.js'
 
 export class CreateTransactionController {
     constructor(createTransactionUseCase) {
@@ -20,42 +11,16 @@ export class CreateTransactionController {
         try {
             const params = httpRequest.body
 
-            const requiredFields = ['user_id', 'name', 'date', 'amount', 'type']
+            await createTransactionSchema.parseAsync(params)
 
-            const { ok: requiredFieldsWereProvided, missingField } =
-                validateRequiredFields(params, requiredFields)
-
-            if (!requiredFieldsWereProvided) {
-                return requiredFieldIsMissingResponse(missingField)
-            }
-
-            const userIdIsValid = checkIfIdIsValid(params.user_id)
-
-            if (!userIdIsValid) {
-                return invalidIdResponse()
-            }
-
-            const amountIsValid = checkIfAmountIsValid(params.amount)
-
-            if (!amountIsValid) {
-                invalidAmountResponse()
-            }
-
-            const type = params.type.trim().toUpperCase()
-
-            const typeIsValid = checkIfTypeIsValid(type)
-
-            if (!typeIsValid) {
-                invalidTypeResponse()
-            }
-
-            const transaction = await this.createTransactionUseCase.execute({
-                ...params,
-                type,
-            })
+            const transaction =
+                await this.createTransactionUseCase.execute(params)
 
             return created(transaction)
         } catch (error) {
+            if (error instanceof ZodError) {
+                return badRequest({ message: error.errors[0].message })
+            }
             console.error(error)
             return serverError()
         }
