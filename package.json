@@ -24,7 +24,8 @@
         "globals": "^15.9.0",
         "husky": "^8.0.0",
         "lint-staged": "^15.2.10",
-        "prettier": "^3.3.3"
+        "prettier": "^3.3.3",
+        "prisma": "^5.21.1"
     },
     "dependencies": {
         "bcrypt": "^5.1.1",
