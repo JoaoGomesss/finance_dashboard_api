@@ -125,4 +125,23 @@ describe('Create User Controller', () => {
 
         expect(result.statusCode).toBe(400)
     })
+
+    it('should call CreateUserUseCase with correct params', async () => {
+        const createUserUseCase = new CreateUserUseCaseStub()
+        const createUserController = new CreateUserController(createUserUseCase)
+        const httpRequest = {
+            body: {
+                first_name: 'Hanna',
+                last_name: 'Lisa',
+                email: 'hannafo@gmail.com',
+                password: '12354562',
+            },
+        }
+
+        const executeSpy = jest.spyOn(createUserUseCase, 'execute')
+
+        await createUserController.execute(httpRequest)
+
+        expect(executeSpy).toHaveBeenCalledWith(httpRequest.body)
+    })
 })
