@@ -5,7 +5,7 @@
     "type": "module",
     "scripts": {
         "test": "jest",
-        "test:watch": "jest --watch",
+        "test:watch": "jest --watch --passWithNoTests",
         "prepare": "husky install",
         "lint": "eslint --fix --ext .js .",
         "start:dev": "node --watch index.js",
@@ -19,7 +19,10 @@
     "license": "ISC",
     "description": "",
     "devDependencies": {
+        "@babel/core": "^7.26.0",
+        "@babel/preset-env": "^7.26.0",
         "@eslint/js": "^9.10.0",
+        "babel-jest": "^29.7.0",
         "eslint": "^9.10.0",
         "git-commit-msg-linter": "^5.0.8",
         "globals": "^15.9.0",
