@@ -1,4 +1,4 @@
-import { badRequest } from './http.js'
+import { badRequest, notFound } from './http.js'
 
 export const invalidPasswordResponse = () =>
     badRequest({
@@ -11,4 +11,4 @@ export const emailIsAlreadyInUse = () =>
     })
 
 export const userNotFoundResponse = () =>
-    badRequest({ message: 'User not found.' })
+    notFound({ message: 'User not found.' })
