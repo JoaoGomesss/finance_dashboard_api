@@ -3,7 +3,7 @@ import { GetUserBalanceController } from './get-user-balance'
 
 describe('GetUserBalanceController', () => {
     class GetUserBalanceUseCaseStub {
-        execute() {
+        async execute() {
             return faker.number.int()
         }
     }
@@ -35,5 +35,17 @@ describe('GetUserBalanceController', () => {
         const result = await sut.execute({ params: { userId: 'invalid_id' } })
 
         expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 500 if GetUserBalanceUseCase throws', async () => {
+        const { sut, getUserBalanceUseCase } = makeSut()
+
+        jest.spyOn(getUserBalanceUseCase, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const result = await sut.execute(httpRequest)
+
+        expect(result.statusCode).toBe(500)
     })
 })
