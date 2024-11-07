@@ -1,0 +1,35 @@
+import { faker } from '@faker-js/faker'
+import { CreateTransactionController } from './create-transaction'
+
+describe('CreateTransactionController', () => {
+    class CreateTransactionUseCaseStub {
+        async execute(transaction) {
+            return transaction
+        }
+    }
+
+    const baseHttpRequest = {
+        body: {
+            user_id: faker.string.uuid(),
+            name: faker.commerce.productName(),
+            date: faker.date.anytime().toISOString(),
+            type: 'EARNING',
+            amount: Number(faker.finance.amount()),
+        },
+    }
+
+    const makeSut = () => {
+        const createTransactionUseCase = new CreateTransactionUseCaseStub()
+        const sut = new CreateTransactionController(createTransactionUseCase)
+
+        return { sut, createTransactionUseCase }
+    }
+
+    it('should return 201 when creating a transaction successfully', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute(baseHttpRequest)
+
+        expect(result.statusCode).toBe(201)
+    })
+})
