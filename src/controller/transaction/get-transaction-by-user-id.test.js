@@ -44,4 +44,14 @@ describe('GetTransactionByUserIdController', () => {
 
         expect(result.statusCode).toBe(400)
     })
+
+    it('should return 400 when userId is invalid', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            query: { userId: 'invalid_userId' },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
 })
