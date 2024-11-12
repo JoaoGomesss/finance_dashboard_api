@@ -1,5 +1,5 @@
 import { GetTransactionsByUserIdController } from './get-transaction-by-user-id'
-import { fa, faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 describe('GetTransactionByUserIdController', () => {
     class getTransactionsByUserIdUseCaseStub {
@@ -35,5 +35,13 @@ describe('GetTransactionByUserIdController', () => {
         })
 
         expect(result.statusCode).toBe(200)
+    })
+
+    it('should return 400 when userId is missing', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({ query: { userId: undefined } })
+
+        expect(result.statusCode).toBe(400)
     })
 })
