@@ -1,5 +1,5 @@
 import { UpdateTransactionController } from './update-transaction'
-import { base, faker } from '@faker-js/faker'
+import { faker } from '@faker-js/faker'
 
 describe('UpdateTransactionController', () => {
     class UpdateTransactionUseCaseStub {
