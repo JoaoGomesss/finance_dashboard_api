@@ -1,5 +1,5 @@
 import { UpdateTransactionController } from './update-transaction'
-import { faker } from '@faker-js/faker'
+import { base, faker } from '@faker-js/faker'
 
 describe('UpdateTransactionController', () => {
     class UpdateTransactionUseCaseStub {
@@ -59,6 +59,17 @@ describe('UpdateTransactionController', () => {
                 ...baseHttpRequest.body,
                 unallowedField: 'unallowed_field',
             },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when an invalid amount is provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...baseHttpRequest,
+            body: { ...baseHttpRequest.body, amount: '23.43' },
         })
 
         expect(result.statusCode).toBe(400)
