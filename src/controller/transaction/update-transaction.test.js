@@ -69,7 +69,18 @@ describe('UpdateTransactionController', () => {
 
         const result = await sut.execute({
             ...baseHttpRequest,
-            body: { ...baseHttpRequest.body, amount: '23.43' },
+            body: { ...baseHttpRequest.body, amount: 'invalid_amount' },
+        })
+
+        expect(result.statusCode).toBe(400)
+    })
+
+    it('should return 400 when an invalid type is provided', async () => {
+        const { sut } = makeSut()
+
+        const result = await sut.execute({
+            ...baseHttpRequest,
+            body: { ...baseHttpRequest.body, type: 'invalid_ type' },
         })
 
         expect(result.statusCode).toBe(400)
