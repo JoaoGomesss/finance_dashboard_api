@@ -5,7 +5,7 @@
 
 /** @type {import('jest').Config} */
 const config = {
-    collectCoverage: false,
+    collectCoverageFrom: ['src/**/*.js'],
     coverageDirectory: 'coverage',
     coverageProvider: 'v8',
 }

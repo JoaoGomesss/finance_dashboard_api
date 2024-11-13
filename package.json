@@ -4,8 +4,9 @@
     "main": "index.js",
     "type": "module",
     "scripts": {
-        "test": "jest",
+        "test": "jest --passWithNoTests --silent",
         "test:watch": "jest --watch --passWithNoTests --silent",
+        "test:coverage": "jest --passWithNoTests --silent --coverage",
         "prepare": "husky install",
         "lint": "eslint --fix --ext .js .",
         "start:dev": "node --watch index.js",
