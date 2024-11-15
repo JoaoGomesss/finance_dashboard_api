@@ -32,4 +32,15 @@ describe('DeleteTransactionUseCase', () => {
 
         expect(result).toEqual({ ...transaction, id: transaction.id })
     })
+
+    it('should call DeleteTransactionRepository with correct params', async () => {
+        const { sut, deleteTransactionRepository } = makeSut()
+        const executeSpy = jest.spyOn(deleteTransactionRepository, 'execute')
+
+        const id = faker.string.uuid()
+
+        await sut.execute(id)
+
+        expect(executeSpy).toHaveBeenCalledWith(id)
+    })
 })
