@@ -1,4 +1,3 @@
-import e from 'express'
 import { UpdateUseCase } from './update-user'
 import { faker } from '@faker-js/faker'
 import { EmailAlreadyInUseError } from '../../errors/user'
@@ -117,5 +116,16 @@ describe('UpdateUserUseCase', () => {
             ...updateUserParams,
             password: 'hashed_password',
         })
+    })
+
+    it('should throws if GetUserByEmailRepository throws', async () => {
+        const { sut, getUserByEmailRepository } = makeSut()
+        jest.spyOn(getUserByEmailRepository, 'execute').mockRejectedValueOnce(
+            new Error(),
+        )
+
+        const result = sut.execute(userId, { email: faker.internet.email() })
+
+        await expect(result).rejects.toThrow()
     })
 })
