@@ -1,3 +1,4 @@
+import e from 'express'
 import { UpdateUseCase } from './update-user'
 import { faker } from '@faker-js/faker'
 
@@ -60,12 +61,16 @@ describe('UpdateUserUseCase', () => {
     })
 
     it('should update a user sucessfully (with email)', async () => {
-        const { sut } = makeSut()
+        const { sut, getUserByEmailRepository } = makeSut()
+        const executeSpy = jest.spyOn(getUserByEmailRepository, 'execute')
+
+        const email = faker.internet.email()
 
         const result = await sut.execute(userId, {
-            email: faker.internet.email(),
+            email,
         })
 
+        expect(executeSpy).toHaveBeenCalledWith(email)
         expect(result).toBe(updatedUser)
     })
 })
