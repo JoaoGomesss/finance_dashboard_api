@@ -97,7 +97,7 @@ describe('CreateTransactionUseCase', () => {
 
     it('should throw UserNotFoundError if user does not exist', async () => {
         const { sut, getUserByIdRepository } = makeSut()
-        jest.spyOn(getUserByIdRepository, 'execute').mockResolvedValue(null)
+        jest.spyOn(getUserByIdRepository, 'execute').mockResolvedValueOnce(null)
 
         const promise = sut.execute(createTransactionParams)
 
