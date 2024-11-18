@@ -1,16 +1,9 @@
 import { UpdateUseCase } from './update-user'
 import { faker } from '@faker-js/faker'
 import { EmailAlreadyInUseError } from '../../errors/user'
+import { user } from '../../tests'
 
 describe('UpdateUserUseCase', () => {
-    const updatedUser = {
-        id: faker.string.uuid(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 7 }),
-    }
-
     const userId = faker.string.uuid()
 
     class GetUserByEmailRepositoryStub {
@@ -27,7 +20,7 @@ describe('UpdateUserUseCase', () => {
 
     class UpdateUserRepositoryStub {
         async execute() {
-            return updatedUser
+            return user
         }
     }
 
@@ -57,7 +50,7 @@ describe('UpdateUserUseCase', () => {
             last_name: faker.person.lastName(),
         })
 
-        expect(result).toBe(updatedUser)
+        expect(result).toBe(user)
     })
 
     it('should update a user sucessfully (with email)', async () => {
@@ -71,7 +64,7 @@ describe('UpdateUserUseCase', () => {
         })
 
         expect(executeSpy).toHaveBeenCalledWith(email)
-        expect(result).toBe(updatedUser)
+        expect(result).toBe(user)
     })
 
     it('should update a user sucessfully (with password)', async () => {
@@ -83,19 +76,19 @@ describe('UpdateUserUseCase', () => {
         const result = await sut.execute(userId, { password })
 
         expect(executeSpy).toHaveBeenCalledWith(password)
-        expect(result).toBe(updatedUser)
+        expect(result).toBe(user)
     })
 
     it('should throw EmailAlreadyInUseError if email already in use', async () => {
         const { sut, getUserByEmailRepository } = makeSut()
         jest.spyOn(getUserByEmailRepository, 'execute').mockResolvedValueOnce(
-            updatedUser,
+            user,
         )
 
-        const result = sut.execute(userId, { email: updatedUser.email })
+        const result = sut.execute(userId, { email: user.email })
 
         await expect(result).rejects.toThrow(
-            new EmailAlreadyInUseError(updatedUser.email),
+            new EmailAlreadyInUseError(user.email),
         )
     })
 
@@ -104,15 +97,15 @@ describe('UpdateUserUseCase', () => {
         const executeSpy = jest.spyOn(updateUserRepository, 'execute')
 
         const updateUserParams = {
-            first_name: updatedUser.first_name,
-            last_name: updatedUser.last_name,
-            email: updatedUser.email,
-            password: updatedUser.password,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            password: user.password,
         }
 
-        await sut.execute(updatedUser.id, updateUserParams)
+        await sut.execute(user.id, updateUserParams)
 
-        expect(executeSpy).toHaveBeenCalledWith(updatedUser.id, {
+        expect(executeSpy).toHaveBeenCalledWith(user.id, {
             ...updateUserParams,
             password: 'hashed_password',
         })
@@ -149,10 +142,10 @@ describe('UpdateUserUseCase', () => {
         )
 
         const result = sut.execute(userId, {
-            first_name: updatedUser.first_name,
-            last_name: updatedUser.last_name,
-            email: updatedUser.email,
-            password: updatedUser.password,
+            first_name: user.first_name,
+            last_name: user.last_name,
+            email: user.email,
+            password: user.password,
         })
 
         await expect(result).rejects.toThrow()

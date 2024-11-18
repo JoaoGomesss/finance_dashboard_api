@@ -1,25 +1,9 @@
 import { UserNotFoundError } from '../../errors/user'
 import { GetUserBalanceUseCase } from './get-user-balance'
 import { faker } from '@faker-js/faker'
+import { user, userBalance } from '../../tests'
 
 describe('GetUserBalanceUseCase', () => {
-    const user = {
-        id: faker.string.uuid(),
-        first_name: faker.person.firstName(),
-        last_name: faker.person.lastName(),
-        email: faker.internet.email(),
-        password: faker.internet.password({ length: 7 }),
-    }
-
-    const userId = faker.string.uuid()
-
-    const userBalance = {
-        earnings: faker.finance.amount(),
-        expenses: faker.finance.amount(),
-        investments: faker.finance.amount(),
-        balance: faker.finance.amount(),
-    }
-
     class GetUserBalanceRepositoryStub {
         async execute() {
             return userBalance
@@ -45,6 +29,7 @@ describe('GetUserBalanceUseCase', () => {
 
     it('should get user balance sucessfully', async () => {
         const { sut } = makeSut()
+        const userId = faker.string.uuid()
 
         const result = await sut.execute(userId)
 
@@ -55,6 +40,8 @@ describe('GetUserBalanceUseCase', () => {
         const { sut, getUserByIdRepository } = makeSut()
         jest.spyOn(getUserByIdRepository, 'execute').mockResolvedValue(null)
 
+        const userId = faker.string.uuid()
+
         const promise = sut.execute(userId)
 
         await expect(promise).rejects.toThrow(new UserNotFoundError(userId))
@@ -64,6 +51,8 @@ describe('GetUserBalanceUseCase', () => {
         const { sut, getUserByIdRepository } = makeSut()
         const executeSpy = jest.spyOn(getUserByIdRepository, 'execute')
 
+        const userId = faker.string.uuid()
+
         await sut.execute(userId)
 
         expect(executeSpy).toHaveBeenCalledWith(userId)
@@ -72,6 +61,8 @@ describe('GetUserBalanceUseCase', () => {
     it('should call GetUserBalanceRepository with correct params', async () => {
         const { sut, getUserBalanceRepository } = makeSut()
         const executeSpy = jest.spyOn(getUserBalanceRepository, 'execute')
+
+        const userId = faker.string.uuid()
 
         await sut.execute(userId)
 
@@ -84,6 +75,8 @@ describe('GetUserBalanceUseCase', () => {
             new Error(),
         )
 
+        const userId = faker.string.uuid()
+
         const promise = sut.execute(userId)
 
         await expect(promise).rejects.toThrow()
@@ -94,6 +87,8 @@ describe('GetUserBalanceUseCase', () => {
         jest.spyOn(getUserBalanceRepository, 'execute').mockRejectedValueOnce(
             new Error(),
         )
+
+        const userId = faker.string.uuid()
 
         const promise = sut.execute(userId)
 
