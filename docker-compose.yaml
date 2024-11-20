@@ -22,12 +22,17 @@ services:
         environment:
             POSTGRES_PASSWORD: password
             POSTGRES_USER: postgres
-            POSTGRES_DB: finance-app
+            POSTGRES_DB: financeapp
             PGDATA: /var/lib/postgresql/data/pgdata
         ports:
             - '5432:5432'
-        volumes:
-            - postgres_data:/var/lib/postgresql/data/pgdata
-
-volumes:
-    postgres_data:
+    postgres-test:
+        image: postgres
+        container_name: finance-app-postgres-test
+        environment:
+            POSTGRES_PASSWORD: password
+            POSTGRES_USER: postgres
+            POSTGRES_DB: financeapp
+            PGDATA: /var/lib/postgresql/data/pgdata
+        ports:
+            - '5433:5432'
