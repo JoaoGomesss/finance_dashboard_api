@@ -12,6 +12,6 @@ export class PostgreCreateUserRepository {
             },
         })
 
-        return user[0]
+        return user
     }
 }

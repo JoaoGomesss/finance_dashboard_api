@@ -1,5 +1,8 @@
 node_modules 
-.postgres-data
+
 .env
 .env.test
+
+.postgres
+
 coverage
