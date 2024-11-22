@@ -1,5 +1,5 @@
 import request from 'supertest'
-import { app } from '../..'
+import { app } from '../app.js'
 import { user } from '../tests/fixtures/user.js'
 
 describe('UserRoutesE2ETests', () => {
@@ -12,5 +12,16 @@ describe('UserRoutesE2ETests', () => {
             })
 
         expect(response.status).toBe(201)
+    })
+
+    it('GET /api/users/:userId should return 200 when user is found', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users/')
+            .send({ ...user, id: undefined })
+
+        const response = await request(app).get(`/api/users/${createdUser.id}`)
+
+        expect(response.status).toBe(200)
+        expect(response.body).toEqual(createdUser)
     })
 })
