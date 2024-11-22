@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { app } from '../app.js'
 import { user } from '../tests/fixtures/user.js'
+import { faker } from '@faker-js/faker'
 
 describe('UserRoutesE2ETests', () => {
     it('POST /api/users hould return 201 when user is created', async () => {
@@ -23,5 +24,28 @@ describe('UserRoutesE2ETests', () => {
 
         expect(response.status).toBe(200)
         expect(response.body).toEqual(createdUser)
+    })
+
+    it('PATCH /api/users/:userId should return 200 when user is upadted', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users/')
+            .send({ ...user, id: undefined })
+
+        const updateUserParams = {
+            first_name: faker.person.firstName(),
+            last_name: faker.person.lastName(),
+            email: faker.internet.email(),
+            password: faker.internet.password({ length: 7 }),
+        }
+
+        const response = await request(app)
+            .patch(`/api/users/${createdUser.id}`)
+            .send(updateUserParams)
+
+        expect(response.status).toBe(200)
+        expect(response.body.first_name).toBe(updateUserParams.first_name)
+        expect(response.body.last_name).toBe(updateUserParams.last_name)
+        expect(response.body.email).toBe(updateUserParams.email)
+        expect(response.body.password).not.toBe(updateUserParams.password)
     })
 })
