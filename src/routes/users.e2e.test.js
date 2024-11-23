@@ -131,4 +131,23 @@ describe('UserRoutesE2ETests', () => {
 
         expect(response.status).toBe(404)
     })
+
+    it('POST /api/users should return 404 when the provided email is already in use', async () => {
+        const { body: createdUser } = await request(app)
+            .get(`/api/users`)
+            .send({
+                ...user,
+                id: undefined,
+            })
+
+        const response = await request(app)
+            .get(`/api/users`)
+            .send({
+                ...user,
+                id: undefined,
+                email: createdUser.email,
+            })
+
+        expect(response.status).toBe(404)
+    })
 })
