@@ -65,4 +65,25 @@ describe('TransactionsRoutesE2ETests', () => {
         expect(response.body.amount).toBe('100')
         expect(response.body.type).toBe(TransactionType.INVESTMENT)
     })
+
+    it('DELETE /api/transactions/transactionId should return 200 when deleting a transaction sucessfully', async () => {
+        const { body: createdUser } = await request(app)
+            .post('/api/users')
+            .send({ ...user, id: undefined })
+
+        const { body: createdTransaction } = await request(app)
+            .post('/api/transactions')
+            .send({
+                ...transaction,
+                user_id: createdUser.id,
+                id: undefined,
+            })
+
+        const respose = await request(app).delete(
+            `/api/transactions/${createdTransaction.id}`,
+        )
+
+        expect(respose.status).toBe(200)
+        expect(respose.body.id).toBe(createdTransaction.id)
+    })
 })
