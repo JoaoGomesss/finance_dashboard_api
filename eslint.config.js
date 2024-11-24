@@ -1,14 +1,17 @@
-import globals, { node } from 'globals'
+import globals from 'globals'
 import pluginJs from '@eslint/js'
 
 export default [
-    { languageOptions: { globals: globals.node } },
-    pluginJs.configs.recommended,
     {
-        env: {
-            es2021: true,
-            node: true,
-            jest: true,
+        files: ['**/*.js'],
+        languageOptions: {
+            ecmaVersion: 2021,
+            sourceType: 'module',
+            globals: {
+                ...globals.node,
+                ...globals.jest,
+            },
         },
     },
+    pluginJs.configs.recommended,
 ]
