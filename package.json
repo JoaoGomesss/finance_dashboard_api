@@ -10,6 +10,7 @@
         "prepare": "husky install",
         "lint": "eslint --fix --ext .js .",
         "start:dev": "node --watch index.js",
+        "start": "node index.js",
         "postinstall": "husky install && prisma generate",
         "eslint:check": "eslint src",
         "prettier:check": "prettier --check src",
