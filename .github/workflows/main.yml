@@ -22,7 +22,7 @@ jobs:
               run: echo "DATABASE_URL=postgresql://root:password@localhost:5433/financeapp" >> .env.test
 
             - name: Install dependencies
-              run: npm install
+              run: npm ci --include=dev
 
             - name: ESlint
               run: npm run eslint:check
@@ -47,7 +47,7 @@ jobs:
                   node-version: '20'
 
             - name: Install dependencies
-              run: npm install
+              run: npm ci --include=dev
 
             - name: Make envfile
               run: echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" > .env
