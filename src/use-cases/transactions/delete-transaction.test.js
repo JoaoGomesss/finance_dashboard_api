@@ -29,7 +29,10 @@ describe('DeleteTransactionUseCase', () => {
 
     it('should call DeleteTransactionRepository with correct params', async () => {
         const { sut, deleteTransactionRepository } = makeSut()
-        const executeSpy = jest.spyOn(deleteTransactionRepository, 'execute')
+        const executeSpy = import.meta.jest.spyOn(
+            deleteTransactionRepository,
+            'execute',
+        )
 
         const id = faker.string.uuid()
 
@@ -40,10 +43,9 @@ describe('DeleteTransactionUseCase', () => {
 
     it('should throw if DeleteTransactionRepository throws', async () => {
         const { sut, deleteTransactionRepository } = makeSut()
-        jest.spyOn(
-            deleteTransactionRepository,
-            'execute',
-        ).mockRejectedValueOnce(new Error())
+        import.meta.jest
+            .spyOn(deleteTransactionRepository, 'execute')
+            .mockRejectedValueOnce(new Error())
 
         const promise = sut.execute(transaction.id)
 
